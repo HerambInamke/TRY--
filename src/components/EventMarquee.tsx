@@ -2,13 +2,11 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, CalendarDays, Zap } from 'lucide-react';
 import { useAnnouncements } from '@/hooks/use-announcements';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 const DISMISS_KEY = 'marquee-dismissed';
 
 const EventMarquee = () => {
   const { announcements, loading } = useAnnouncements();
-  const reducedMotion = useReducedMotion();
   const [dismissed, setDismissed] = useState(false);
   const [sequenceCount, setSequenceCount] = useState(2);
   const overflowRef = useRef<HTMLDivElement>(null);
@@ -109,7 +107,7 @@ const EventMarquee = () => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={reducedMotion ? {} : { height: 0, opacity: 0 }}
+        initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
@@ -132,10 +130,7 @@ const EventMarquee = () => {
 
           {/* Marquee track */}
           <div className="marquee-overflow" ref={overflowRef}>
-            <div
-              className="marquee-track"
-              style={reducedMotion ? { animation: 'none' } : undefined}
-            >
+            <div className="marquee-track">
               <div className="marquee-group flex items-center">
                 {Array.from({ length: sequenceCount }, (_, index) => (
                   <div

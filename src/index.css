@@ -1222,6 +1222,10 @@
     scroll-behavior: auto !important;
   }
 
+  .marquee-track {
+    animation: marquee-scroll 38s linear infinite !important;
+  }
+
   .reveal-up {
     opacity: 1 !important;
     transform: none !important;
