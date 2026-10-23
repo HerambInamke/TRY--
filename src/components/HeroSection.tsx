@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCountUp } from '@/hooks/use-count-up';
@@ -68,8 +69,16 @@ const AnimatedTitle = () => {
 const HeroSection = () => {
   const reducedMotion = useReducedMotion();
 
+  // Parallax: heritage silhouette drifts slower than the page, content lifts and fades as the hero leaves
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const silhouetteY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
   return (
     <section
+      ref={heroRef}
       id="home"
       className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#0A0A0A] px-[22px] pt-[52px]"
     >
@@ -85,7 +94,10 @@ const HeroSection = () => {
           }}
         />
         {/* Shaniwar Wada heritage silhouette — on top of particles */}
-        <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden">
+        <motion.div
+          className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden"
+          style={reducedMotion ? undefined : { y: silhouetteY }}
+        >
           <img
             src={shaniwarWadaSvg}
             alt=""
@@ -97,11 +109,14 @@ const HeroSection = () => {
               transform: 'translateY(10%)',
             }}
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* ── Content ───────────────────────────────────── */}
-      <div className="site-shell relative z-10 mx-auto flex min-h-[calc(100svh-52px)] w-full flex-col items-center justify-center pb-16 pt-20 text-center">
+      <motion.div
+        className="site-shell relative z-10 mx-auto flex min-h-[calc(100svh-52px)] w-full flex-col items-center justify-center pb-16 pt-20 text-center"
+        style={reducedMotion ? undefined : { y: contentY, opacity: contentOpacity }}
+      >
         <motion.div
           className="section-eyebrow text-[#9CA3AF]"
           initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
@@ -170,7 +185,7 @@ const HeroSection = () => {
             size="lg"
             className="h-12 rounded-full px-7 text-[16px] font-semibold text-white"
           >
-            <a href="#about">Explore events</a>
+            <a href="#highlights">Explore events</a>
           </Button>
         </motion.div>
 
@@ -194,7 +209,7 @@ const HeroSection = () => {
           <span className="h-8 w-px bg-white/20" />
           <ChevronDown className="h-4 w-4" />
         </a>
-      </div>
+      </motion.div>
     </section>
   );
 };

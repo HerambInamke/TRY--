@@ -25,13 +25,26 @@ const EventMarquee = () => {
 
   const isVisible = !loading && announcements.length > 0 && !dismissed;
 
+  // On small screens, collapse the ticker once the user scrolls so it stops covering content
+  const [collapsed, setCollapsed] = useState(false);
   useEffect(() => {
-    document.documentElement.classList.toggle('has-event-marquee', isVisible);
+    const onScroll = () => setCollapsed(window.innerWidth < 1024 && window.scrollY > 80);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('has-event-marquee', isVisible && !collapsed);
 
     return () => {
       document.documentElement.classList.remove('has-event-marquee');
     };
-  }, [isVisible]);
+  }, [isVisible, collapsed]);
 
   useLayoutEffect(() => {
     if (!isVisible) return;
@@ -57,14 +70,20 @@ const EventMarquee = () => {
 
   if (!isVisible) return null;
 
+  const startOfToday = new Date().setHours(0, 0, 0, 0);
+
   const renderItems = (groupKey: string, isDuplicate: boolean) =>
     announcements.map((a, idx) => {
       const targetUrl = a.link || a.meetupLink;
       const isLuma = a.platform === 'luma' || /lu\.ma|luma/i.test(targetUrl);
       const isMeetup = a.platform === 'meetup' || /meetup\.com/i.test(targetUrl);
       const platformName = isLuma ? 'Luma' : isMeetup ? 'Meetup' : 'Event';
-      const isUpcoming = a.badge ? a.badge === 'UPCOMING' : !/latest|recap|past/i.test(a.message);
-      const badgeLabel = a.badge || (isUpcoming ? 'UPCOMING' : 'LATEST');
+      // A parseable date wins over the stored badge so past events stop showing UPCOMING
+      const eventTime = a.date ? Date.parse(a.date) : NaN;
+      const isUpcoming = !Number.isNaN(eventTime)
+        ? eventTime >= startOfToday
+        : a.badge ? a.badge === 'UPCOMING' : !/latest|recap|past/i.test(a.message);
+      const badgeLabel = Number.isNaN(eventTime) && a.badge ? a.badge : isUpcoming ? 'UPCOMING' : 'LATEST';
 
       return (
         <a
@@ -108,7 +127,7 @@ const EventMarquee = () => {
     <AnimatePresence>
       <motion.div
         initial={{ height: 0, opacity: 0 }}
-        animate={{ height: 'auto', opacity: 1 }}
+        animate={collapsed ? { height: 0, opacity: 0 } : { height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
         transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         className="fixed top-0 left-0 right-0 z-40 overflow-hidden"
@@ -155,10 +174,6 @@ const EventMarquee = () => {
               </div>
             </div>
           </div>
-
-          {/* Fade edges */}
-          <div className="marquee-fade-left" />
-          <div className="marquee-fade-right" />
 
           {/* Close button */}
           <button

@@ -23,6 +23,13 @@ const valueProps = [
   },
 ] as const;
 
+/** Feeds the cursor position to the card's CSS so the glow and border light follow it */
+const trackSpotlight = (e: React.MouseEvent<HTMLElement>) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+  e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`);
+};
+
 const cardCaptions = [
   {
     title: 'Community Meetups',
@@ -237,7 +244,7 @@ const AboutSection = () => {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.5, delay: 0.08 }}
           >
-            Where Innovation Meets Community
+            Learn Cloud by Building Together
           </motion.h2>
           <motion.p
             className="mx-auto mt-5 section-body text-center"
@@ -252,33 +259,40 @@ const AboutSection = () => {
         </div>
 
         <motion.div
-          className="mt-12 grid gap-6 md:grid-cols-3"
+          className="mt-10 sm:mt-12 grid gap-3 sm:gap-6 md:grid-cols-3"
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: '-60px' }}
         >
-          {valueProps.map((card) => (
+          {valueProps.map((card, index) => (
             <motion.article
               key={card.title}
               variants={fadeUp}
-              whileHover={reducedMotion ? {} : {
-                y: -4,
-                borderColor: 'rgba(255, 153, 0, 0.4)',
-                boxShadow: '0 0 0 1px rgba(255, 153, 0, 0.3), 0 8px 32px rgba(255, 153, 0, 0.08)',
-              }}
-              className="flex flex-col items-start rounded-xl border border-[rgba(255,255,255,0.08)] bg-[#141414] p-8 transition-colors"
+              whileHover={reducedMotion ? {} : { y: -6 }}
+              onMouseMove={trackSpotlight}
+              className="spotlight-card group relative rounded-2xl p-px"
             >
-              <motion.div
-                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF9900]/[0.1] text-[#FF9900]"
-                variants={scaleSpring}
-                initial="rest"
-                whileHover="hover"
-              >
-                <card.icon className="h-5 w-5" />
-              </motion.div>
-              <h3 className="mt-6 text-[18px] font-semibold text-white">{card.title}</h3>
-              <p className="mt-3 text-[14px] leading-[1.7] text-[#C8C6BE]">{card.body}</p>
+              <div className="spotlight-card-inner relative flex h-full flex-row md:flex-col items-start gap-4 md:gap-0 overflow-hidden rounded-[15px] bg-[#0D0D0D] p-5 md:p-8">
+                <span className="absolute right-5 top-5 md:right-7 md:top-7 font-mono text-[11px] tracking-[0.2em] text-white/25 transition-colors duration-300 group-hover:text-[#FF9900]/80">
+                  0{index + 1} / 0{valueProps.length}
+                </span>
+
+                <motion.div
+                  className="relative flex h-11 w-11 md:h-14 md:w-14 shrink-0 items-center justify-center rounded-2xl border border-[#FF9900]/20 bg-gradient-to-br from-[#FF9900]/20 to-[#FF9900]/[0.03] text-[#FF9900] shadow-[0_0_24px_rgba(255,153,0,0.15)] transition-shadow duration-300 group-hover:shadow-[0_0_36px_rgba(255,153,0,0.35)]"
+                  variants={scaleSpring}
+                  initial="rest"
+                  whileHover="hover"
+                >
+                  <card.icon className="h-5 w-5 md:h-6 md:w-6" />
+                </motion.div>
+
+                <div className="relative pr-12 md:pr-0">
+                  <h3 className="md:mt-8 text-[17px] md:text-[20px] font-semibold tracking-tight text-white">{card.title}</h3>
+                  <p className="mt-1.5 md:mt-3 text-[14px] md:text-[15px] leading-[1.7] text-[#C8C6BE]">{card.body}</p>
+                  <span className="mt-4 md:mt-6 block h-px w-10 bg-gradient-to-r from-[#FF9900] to-transparent transition-all duration-500 ease-out group-hover:w-full" />
+                </div>
+              </div>
             </motion.article>
           ))}
         </motion.div>
@@ -293,10 +307,6 @@ const AboutSection = () => {
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.5, delay: 0.08 }}
             >
-              <p>
-                AWS User Group Pune is a community-led movement for builders, students, and
-                professionals who learn cloud by doing, sharing, and mentoring.
-              </p>
               <p>
                 From regular meetups to deep-dive workshops, we create hands-on spaces where
                 ideas become projects and newcomers grow into contributors.

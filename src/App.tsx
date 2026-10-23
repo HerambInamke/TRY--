@@ -16,9 +16,9 @@ import Dashboard from "./pages/Dashboard";
 import WomenInTechPage from "./pages/WomenInTech";
 import { initFirebase, trackPageView } from "@/lib/firebase";
 import NotificationPrompt from "@/components/NotificationPrompt";
-import LoginPrompt from "@/components/LoginPrompt";
 import ProfileCompletionModal from "@/components/ProfileCompletionModal";
 import EventMarquee from "@/components/EventMarquee";
+import ScrollProgress from "@/components/ScrollProgress";
 import GlobalCursorTrail from "@/components/GlobalCursorTrail";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -75,7 +75,6 @@ const App = () => {
                 <AppShell />
               </BrowserRouter>
               <NotificationPrompt preloaderDone={hasSeenPreloader} />
-              <LoginPrompt preloaderDone={hasSeenPreloader} />
             </TooltipProvider>
           </QueryClientProvider>
         </AuthProvider>
@@ -105,6 +104,7 @@ const AppShell = () => {
   return (
     <>
       <EventMarquee />
+      <ScrollProgress />
       <GlobalCursorTrail />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>

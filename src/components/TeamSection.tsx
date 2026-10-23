@@ -59,7 +59,7 @@ const TeamMemberCard = ({ member, isCoreTeam = false, onSelect }: TeamMemberCard
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="mt-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] bg-white/[0.02] text-[#9CA3AF] opacity-0 scale-[0.8] transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:border-[#FF9900]/30 hover:text-white"
+          className="mt-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(255,255,255,0.08)] bg-white/[0.02] text-[#9CA3AF] md:opacity-0 md:scale-[0.8] transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 hover:border-[#FF9900]/30 hover:text-white"
           aria-label={`${member.name}'s LinkedIn`}
         >
           <Linkedin className="h-4 w-4" />
@@ -246,7 +246,7 @@ const TeamSection = () => {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={tab.value}
-                    className="grid gap-5 sm:grid-cols-2 md:grid-cols-3"
+                    className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3"
                     variants={staggerContainer(0.06)}
                     initial="hidden"
                     animate="show"

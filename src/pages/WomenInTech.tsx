@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type RefObject } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import JoinFormModal from '@/components/JoinFormModal';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useCountUp } from '@/hooks/use-count-up';
 import { fadeUp, staggerContainer, pageTransition } from '@/lib/motion-variants';
 import { type ApplicationRole } from '@/hooks/use-community-applications';
 import afreenBano from '@/assets/panelist/Afreen Bano.jpeg';
@@ -156,6 +157,24 @@ const defaultGalleryImages = [
   "_DSC5641.JPG"
 ];
 
+// Gallery photos open like a shutter instead of sliding up
+const photoReveal = {
+  hidden: { opacity: 0, clipPath: 'inset(10% 10% 10% 10% round 16px)' },
+  show: {
+    opacity: 1,
+    clipPath: 'inset(0% 0% 0% 0% round 16px)',
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
+/** "500+" → counts 0→500 when scrolled into view, keeps the suffix */
+const StatValue = ({ value }: { value: string }) => {
+  const target = parseInt(value, 10);
+  const suffix = value.replace(/^\d+/, '');
+  const { value: current, ref } = useCountUp(target, 1600);
+  return <span ref={ref as RefObject<HTMLSpanElement>}>{current}{suffix}</span>;
+};
+
 interface MilestoneData {
   date: string;
   title: string;
@@ -208,7 +227,7 @@ const TimelineMilestone = ({
 
   return (
     <div
-      className={`relative flex items-center gap-6 pb-20 md:pb-28 ${
+      className={`relative flex items-center gap-6 pb-10 md:pb-28 ${
         isEven ? 'md:flex-row' : 'md:flex-row-reverse'
       }`}
     >
@@ -268,15 +287,27 @@ const TimelineMilestone = ({
 
 const WomenInTechPage = () => {
   const reducedMotion = useReducedMotion();
+
+  // Hero parallax: wings spread, glow sinks, content drifts and fades as the hero scrolls away
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const leftWingX = useTransform(heroProgress, [0, 1], [0, -70]);
+  const rightWingX = useTransform(heroProgress, [0, 1], [0, 70]);
+  const heroGlowY = useTransform(heroProgress, [0, 1], ['0%', '35%']);
+  const heroContentY = useTransform(heroProgress, [0, 1], [0, 90]);
+  const heroContentOpacity = useTransform(heroProgress, [0, 0.75], [1, 0]);
+
   const timelineRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: timelineProgress } = useScroll({
     target: timelineRef,
     offset: ['start 70%', 'end 75%'],
   });
 
+  // Soft, heavy spring so the spine and milestones glide in slowly behind the scroll
   const smoothTimelineProgress = useSpring(timelineProgress, {
-    stiffness: 90,
-    damping: 24,
+    stiffness: 30,
+    damping: 20,
+    mass: 1.4,
     restDelta: 0.001,
   });
 
@@ -314,14 +345,21 @@ const WomenInTechPage = () => {
     <>
       <Helmet>
         <title>Her Tech Era — AWS User Group Pune | Scaling Heights, Building Dreams</title>
-        <meta name="description" content="Empowering women in cloud computing through mentorship, workshops, and community. It's Her Tech Era at AWS User Group Pune." />
+        <meta name="description" content="Her Tech Era is the Pune Chapter of AWS User Group Women in Tech India: workshops, mentorship, and speaking opportunities for women in cloud, AI, and DevOps." />
+        <link rel="canonical" href="https://www.awsugpune.in/her-tech-era" />
+        <meta property="og:url" content="https://www.awsugpune.in/her-tech-era" />
+        <meta property="og:title" content="Her Tech Era — AWS User Group Pune" />
+        <meta property="og:description" content="The Pune Chapter of AWS User Group Women in Tech India. Powered by AWS User Group Pune." />
+        <meta property="og:image" content="https://www.awsugpune.in/her-tech-era-photos/DSC06464.JPG" />
+        <meta name="twitter:title" content="Her Tech Era — AWS User Group Pune" />
+        <meta name="twitter:image" content="https://www.awsugpune.in/her-tech-era-photos/DSC06464.JPG" />
       </Helmet>
 
       <motion.div className="min-h-screen bg-[#0A0A0A]" variants={reducedMotion ? {} : pageTransition} initial="initial" animate="animate" exit="exit">
         <Header />
 
         {/* ═══ HERO — Unified Emblem Event Hero ═══ */}
-        <section className="relative flex min-h-[calc(100svh-44px)] flex-col justify-center items-center overflow-hidden pt-16 sm:pt-18 pb-6 sm:pb-8 text-center">
+        <section ref={heroRef} className="relative flex sm:min-h-[calc(100svh-44px)] flex-col justify-center items-center overflow-hidden pt-[calc(4.5rem+var(--event-marquee-height))] pb-12 sm:pb-8 text-center">
           {/* Deep atmospheric violet-to-midnight gradient */}
           <div
             className="absolute inset-0"
@@ -332,15 +370,20 @@ const WomenInTechPage = () => {
           />
 
           {/* Soft ambient radial glow centered behind the emblem */}
-          <div
-            className="pointer-events-none absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] sm:h-[540px] sm:w-[540px] lg:h-[640px] lg:w-[640px] rounded-full"
-            style={{
-              background:
-                'radial-gradient(circle, rgba(192, 132, 252, 0.18) 0%, rgba(147, 51, 234, 0.09) 40%, transparent 75%)',
-              filter: 'blur(35px)',
-            }}
+          <motion.div
+            className="pointer-events-none absolute inset-0"
+            style={reducedMotion ? undefined : { y: heroGlowY }}
             aria-hidden="true"
-          />
+          >
+            <div
+              className="absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] sm:h-[540px] sm:w-[540px] lg:h-[640px] lg:w-[640px] rounded-full"
+              style={{
+                background:
+                  'radial-gradient(circle, rgba(192, 132, 252, 0.18) 0%, rgba(147, 51, 234, 0.09) 40%, transparent 75%)',
+                filter: 'blur(35px)',
+              }}
+            />
+          </motion.div>
 
           {/* Subtle translucent geometric accents for depth */}
           <div
@@ -459,7 +502,10 @@ const WomenInTechPage = () => {
             }}
           />
 
-          <div className="site-container relative z-10 text-center mx-auto px-6 max-w-4xl">
+          <motion.div
+            className="site-container relative z-10 text-center mx-auto px-6 max-w-4xl"
+            style={reducedMotion ? undefined : { y: heroContentY, opacity: heroContentOpacity }}
+          >
             {/* Event Identity Eyebrow */}
             <motion.div
               className="mb-2 sm:mb-2.5 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-950/50 px-3.5 sm:px-4 py-1 backdrop-blur-md shadow-[0_0_16px_rgba(168,85,247,0.15)]"
@@ -469,7 +515,7 @@ const WomenInTechPage = () => {
             >
               <span className="h-1.5 w-1.5 rounded-full bg-[#FF9900] shadow-[0_0_6px_#FF9900] animate-pulse" />
               <span className="text-[9.5px] sm:text-[10.5px] font-bold tracking-[0.18em] text-[#E9D5FF] uppercase">
-                A Women in Technology Initiative by AWS User Group Pune
+                The Pune Chapter of AWS User Group Women in Tech India
               </span>
             </motion.div>
 
@@ -481,6 +527,7 @@ const WomenInTechPage = () => {
               transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
             >
               {/* Left Wing — Framing the left side of the title */}
+              <motion.div className="shrink-0" style={reducedMotion ? undefined : { x: leftWingX }}>
               <motion.img
                 src="/wings/right_wing.svg"
                 alt=""
@@ -506,6 +553,7 @@ const WomenInTechPage = () => {
                       }
                 }
               />
+              </motion.div>
 
               {/* Title — Clear, crisp foreground in DM Serif Display */}
               <h1
@@ -520,6 +568,7 @@ const WomenInTechPage = () => {
               </h1>
 
               {/* Right Wing — Framing the right side of the title */}
+              <motion.div className="shrink-0" style={reducedMotion ? undefined : { x: rightWingX }}>
               <motion.img
                 src="/wings/left_wing.svg"
                 alt=""
@@ -545,6 +594,7 @@ const WomenInTechPage = () => {
                       }
                 }
               />
+              </motion.div>
             </motion.div>
 
             {/* Tagline — directly below emblem */}
@@ -565,7 +615,7 @@ const WomenInTechPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              Empowering women in cloud, AI, DevOps, and architecture through mentorship, workshops, and community.
+              Powered by AWS User Group Pune.
             </motion.p>
 
             {/* Event Information Row */}
@@ -575,11 +625,11 @@ const WomenInTechPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <Calendar className="h-3 w-3 text-[#FF9900]" />
-              <span className="text-white">18 OCTOBER 2026</span>
+              <MapPin className="h-3 w-3 text-[#FF9900]" />
+              <span className="text-white">THANK YOU, PUNE</span>
               <span className="text-white/30 text-xs">·</span>
-              <MapPin className="h-3 w-3 text-purple-300" />
-              <span className="text-[#E9D5FF]">PUNE</span>
+              <Calendar className="h-3 w-3 text-purple-300" />
+              <span className="text-[#E9D5FF]">18 OCT 2026 RECAP</span>
             </motion.div>
 
             {/* Primary & Secondary CTAs */}
@@ -610,7 +660,7 @@ const WomenInTechPage = () => {
                 </a>
               </Button>
             </motion.div>
-          </div>
+          </motion.div>
         </section>
 
         {/* ═══ IMPACT & STATISTICS (Moved from Hero) ═══ */}
@@ -640,7 +690,7 @@ const WomenInTechPage = () => {
                   style={{ borderTop: '2px solid #9361A1' }}
                 >
                   <div className="text-[26px] sm:text-[30px] font-black tracking-tight text-white">
-                    {s.value}
+                    {reducedMotion ? s.value : <StatValue value={s.value} />}
                   </div>
                   <div className="mt-1 text-[12.5px] sm:text-[13.5px] font-semibold text-white/90">
                     {s.label}
@@ -700,129 +750,38 @@ const WomenInTechPage = () => {
               <span className="flex items-center gap-2 text-white/70 font-semibold"><span className="text-[#C084FC]">04</span> GROW</span>
             </div>
 
-            {/* 2x2 Editorial Grid with Subtle Hairline Dividers */}
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/[0.08]">
-              {/* Column 1 (01 Learn & 03 Connect) */}
-              <div className="divide-y divide-white/[0.08]">
-                {/* 01 — LEARN */}
+            {/* 2x2 Editorial Grid — one ordered list so mobile reads 01 → 04 */}
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {pillars.map((p, i) => (
                 <motion.article
-                  className="group p-8 sm:p-10 lg:p-12 transition-colors hover:bg-white/[0.015]"
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, margin: '-40px' }}
+                  key={p.num}
+                  className="group p-8 sm:p-10 lg:p-12 transition-colors hover:bg-white/[0.015] border-white/[0.08] border-b last:border-b-0 md:odd:border-r md:[&:nth-child(n+3)]:border-b-0"
+                  initial={reducedMotion ? {} : { opacity: 0, y: 32 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-60px' }}
+                  transition={{ duration: 0.6, delay: (i % 2) * 0.12, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <div className="flex items-baseline justify-between">
                     <span className="font-mono text-[36px] sm:text-[44px] font-light text-white/20 group-hover:text-[#C084FC]/60 transition-colors">
-                      {pillars[0].num}
+                      {p.num}
                     </span>
                     <span className="text-[11px] font-mono tracking-widest text-white/35 uppercase">
-                      {pillars[0].phase}
+                      {p.phase}
                     </span>
                   </div>
                   <div className="mt-4 sm:mt-6">
                     <span className="text-[11px] sm:text-[11.5px] font-black tracking-[0.2em] text-[#D8B4FE] uppercase block mb-1">
-                      {pillars[0].action}
+                      {p.action}
                     </span>
                     <h3 className="font-serif text-[21px] sm:text-[24px] font-bold text-white tracking-[-0.01em]">
-                      {pillars[0].subtitle}
+                      {p.subtitle}
                     </h3>
                   </div>
                   <p className="mt-3 text-[14px] sm:text-[14.5px] leading-[1.75] text-white/70 font-normal max-w-md">
-                    {pillars[0].description}
+                    {p.description}
                   </p>
                 </motion.article>
-
-                {/* 03 — CONNECT */}
-                <motion.article
-                  className="group p-8 sm:p-10 lg:p-12 transition-colors hover:bg-white/[0.015]"
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, margin: '-40px' }}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-mono text-[36px] sm:text-[44px] font-light text-white/20 group-hover:text-[#C084FC]/60 transition-colors">
-                      {pillars[2].num}
-                    </span>
-                    <span className="text-[11px] font-mono tracking-widest text-white/35 uppercase">
-                      {pillars[2].phase}
-                    </span>
-                  </div>
-                  <div className="mt-4 sm:mt-6">
-                    <span className="text-[11px] sm:text-[11.5px] font-black tracking-[0.2em] text-[#D8B4FE] uppercase block mb-1">
-                      {pillars[2].action}
-                    </span>
-                    <h3 className="font-serif text-[21px] sm:text-[24px] font-bold text-white tracking-[-0.01em]">
-                      {pillars[2].subtitle}
-                    </h3>
-                  </div>
-                  <p className="mt-3 text-[14px] sm:text-[14.5px] leading-[1.75] text-white/70 font-normal max-w-md">
-                    {pillars[2].description}
-                  </p>
-                </motion.article>
-              </div>
-
-              {/* Column 2 (02 Be Seen & 04 Grow) */}
-              <div className="divide-y divide-white/[0.08]">
-                {/* 02 — BE SEEN */}
-                <motion.article
-                  className="group p-8 sm:p-10 lg:p-12 transition-colors hover:bg-white/[0.015]"
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, margin: '-40px' }}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-mono text-[36px] sm:text-[44px] font-light text-white/20 group-hover:text-[#C084FC]/60 transition-colors">
-                      {pillars[1].num}
-                    </span>
-                    <span className="text-[11px] font-mono tracking-widest text-white/35 uppercase">
-                      {pillars[1].phase}
-                    </span>
-                  </div>
-                  <div className="mt-4 sm:mt-6">
-                    <span className="text-[11px] sm:text-[11.5px] font-black tracking-[0.2em] text-[#D8B4FE] uppercase block mb-1">
-                      {pillars[1].action}
-                    </span>
-                    <h3 className="font-serif text-[21px] sm:text-[24px] font-bold text-white tracking-[-0.01em]">
-                      {pillars[1].subtitle}
-                    </h3>
-                  </div>
-                  <p className="mt-3 text-[14px] sm:text-[14.5px] leading-[1.75] text-white/70 font-normal max-w-md">
-                    {pillars[1].description}
-                  </p>
-                </motion.article>
-
-                {/* 04 — GROW */}
-                <motion.article
-                  className="group p-8 sm:p-10 lg:p-12 transition-colors hover:bg-white/[0.015]"
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, margin: '-40px' }}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-mono text-[36px] sm:text-[44px] font-light text-white/20 group-hover:text-[#C084FC]/60 transition-colors">
-                      {pillars[3].num}
-                    </span>
-                    <span className="text-[11px] font-mono tracking-widest text-white/35 uppercase">
-                      {pillars[3].phase}
-                    </span>
-                  </div>
-                  <div className="mt-4 sm:mt-6">
-                    <span className="text-[11px] sm:text-[11.5px] font-black tracking-[0.2em] text-[#D8B4FE] uppercase block mb-1">
-                      {pillars[3].action}
-                    </span>
-                    <h3 className="font-serif text-[21px] sm:text-[24px] font-bold text-white tracking-[-0.01em]">
-                      {pillars[3].subtitle}
-                    </h3>
-                  </div>
-                  <p className="mt-3 text-[14px] sm:text-[14.5px] leading-[1.75] text-white/70 font-normal max-w-md">
-                    {pillars[3].description}
-                  </p>
-                </motion.article>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -868,7 +827,7 @@ const WomenInTechPage = () => {
               {/* Left: FEATURED IMAGE (Spans 7 cols, spans 2 full rows) */}
               {featuredPhoto && (
                 <motion.div
-                  variants={fadeUp}
+                  variants={reducedMotion ? fadeUp : photoReveal}
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-30px' }}
@@ -895,7 +854,7 @@ const WomenInTechPage = () => {
               {/* Right Top: PHOTO 2 (Spans 5 cols, row 1) */}
               {sidePhotos[0] && (
                 <motion.div
-                  variants={fadeUp}
+                  variants={reducedMotion ? fadeUp : photoReveal}
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-30px' }}
@@ -919,7 +878,7 @@ const WomenInTechPage = () => {
               {/* Right Bottom: PHOTO 3 (Spans 5 cols, row 2) */}
               {sidePhotos[1] && (
                 <motion.div
-                  variants={fadeUp}
+                  variants={reducedMotion ? fadeUp : photoReveal}
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-30px' }}
@@ -946,7 +905,7 @@ const WomenInTechPage = () => {
               {bottomPhotos.map((src, idx) => (
                 <motion.div
                   key={src}
-                  variants={fadeUp}
+                  variants={reducedMotion ? fadeUp : photoReveal}
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, margin: '-30px' }}
@@ -1284,13 +1243,13 @@ const WomenInTechPage = () => {
                           loading="lazy"
                         />
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <h4 className={`text-[14px] font-semibold truncate transition-colors ${
+                          <div className="flex flex-wrap items-baseline justify-between gap-x-2">
+                            <h4 className={`text-[14px] font-semibold transition-colors ${
                               isActive ? 'text-white' : 'text-white/80'
                             }`}>
                               {v.name}
                             </h4>
-                            <span className="text-[10px] font-mono tracking-wider text-[#C084FC]/80 uppercase shrink-0">
+                            <span className="text-[10px] font-mono tracking-wider text-[#C084FC]/80 uppercase">
                               {v.role.split(' ')[0]}
                             </span>
                           </div>
@@ -1382,7 +1341,7 @@ const WomenInTechPage = () => {
         </section>
 
         {/* ═══ TRANSITION CONNECTOR ═══ */}
-        <div className="bg-[#09050E] flex flex-col items-center justify-center py-2 sm:py-4 pointer-events-none">
+        <div className="bg-[#09050E] hidden sm:flex flex-col items-center justify-center py-2 sm:py-4 pointer-events-none">
           <div className="w-[1px] h-12 sm:h-16 bg-gradient-to-b from-purple-400/35 via-purple-400/15 to-transparent" />
         </div>
 

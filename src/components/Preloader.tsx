@@ -20,7 +20,8 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
 
     // Start exit animation after lottie plays
     const exitTimer = setTimeout(() => setIsExiting(true), 3000);
-    const completeTimer = setTimeout(() => onComplete(), 3800);
+    // Unmount right after the short exit fade so no loader text lingers over the hero
+    const completeTimer = setTimeout(() => onComplete(), 3400);
 
     return () => {
       clearInterval(progressInterval);
@@ -34,8 +35,8 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
       {!isExiting ? (
         <motion.div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
-          exit={{ opacity: 0, scale: 1.1 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          exit={{ opacity: 0, pointerEvents: 'none' }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
         >
           {/* Animated Background */}
           <div className="absolute inset-0 overflow-hidden">

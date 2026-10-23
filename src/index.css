@@ -87,7 +87,12 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 6rem; /* keep anchor targets clear of the fixed header */
     background: var(--bg-primary);
+  }
+
+  html.has-event-marquee {
+    scroll-padding-top: calc(6rem + var(--event-marquee-height));
   }
 
   body {
@@ -268,6 +273,54 @@
     color: var(--text-tertiary);
     position: relative;
     z-index: 1;
+  }
+
+  /* Spotlight cards: border and inner glow follow the cursor (--mx/--my set from JS) */
+  .spotlight-card {
+    --mx: 15%;
+    --my: 0%;
+    background:
+      radial-gradient(300px circle at var(--mx) var(--my), rgba(255, 153, 0, 0.95), rgba(255, 153, 0, 0.15) 40%, transparent 65%),
+      rgba(255, 255, 255, 0.08);
+    transition: background 0.3s;
+  }
+
+  .spotlight-card-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(380px circle at var(--mx) var(--my), rgba(255, 153, 0, 0.2), transparent 55%);
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .spotlight-card:hover .spotlight-card-inner::before {
+    opacity: 1;
+  }
+
+  /* Two-up cards on phones: tighter padding and scaled numbers */
+  @media (max-width: 639px) {
+    .glass-card {
+      padding: 20px 12px;
+    }
+
+    .metric-card {
+      padding: 22px 12px;
+    }
+
+    .metric-value {
+      font-size: 40px;
+    }
+
+    .metric-ghost {
+      font-size: 120px;
+    }
+
+    .metric-label {
+      margin-top: 8px;
+      font-size: 11px;
+    }
   }
 
   .frosted-pill {
@@ -473,6 +526,17 @@
     overflow: hidden;
     position: relative;
     z-index: 5;
+    /* stop the track before the close button and soften both edges so text isn't clipped */
+    margin-left: 6px;
+    margin-right: 36px;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  }
+
+  @media (min-width: 640px) {
+    .marquee-overflow {
+      margin-right: 44px;
+    }
   }
 
   .marquee-item {
@@ -573,34 +637,6 @@
     color: rgba(255, 255, 255, 0.3);
     font-size: 10px;
     margin-left: 14px;
-  }
-
-  .marquee-fade-left {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 60px;
-    pointer-events: none;
-    z-index: 10;
-    background: linear-gradient(to right, #13091B 0%, transparent 100%);
-  }
-
-  .marquee-fade-right {
-    position: absolute;
-    right: 36px;
-    top: 0;
-    bottom: 0;
-    width: 60px;
-    pointer-events: none;
-    z-index: 10;
-    background: linear-gradient(to left, #13091B 0%, transparent 100%);
-  }
-
-  @media (min-width: 640px) {
-    .marquee-fade-right {
-      right: 44px;
-    }
   }
 
   .marquee-close {

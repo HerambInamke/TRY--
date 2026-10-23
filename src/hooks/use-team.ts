@@ -21,7 +21,7 @@ const fallbackCore: TeamMember[] = [
   { name: 'Ameya Vaidya', linkedin: 'https://linkedin.com/in/ameya-vaidya-9a164317/', email: 'amyvaidya@gmail.com', twitter: '', category: 'core' },
   { name: 'Vipul Chaudhary', linkedin: 'https://linkedin.com/in/v-chaudhary/', email: '', twitter: '', category: 'core' },
   { name: 'Pulkit Kshirsagar', linkedin: 'https://linkedin.com/in/pulkit-kshirsagar/', email: '', twitter: '', category: 'core' },
-  { name: 'AFREEN BANO', linkedin: 'https://linkedin.com/in/afreen-bano/', email: 'banoafreen786@gmail.com', twitter: '', category: 'core' },
+  { name: 'Afreen Bano', linkedin: 'https://linkedin.com/in/afreen-bano/', email: 'banoafreen786@gmail.com', twitter: '', category: 'core' },
 ];
 
 const fallbackVolunteers: TeamMember[] = [

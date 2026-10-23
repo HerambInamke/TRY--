@@ -33,7 +33,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-[#0A0A0A] px-[22px] pb-8 pt-12">
+    <footer className="relative bg-[#0A0A0A] px-[22px] pb-20 sm:pb-8 pt-12">
       {/* ── Animated gradient separator ──────────────── */}
       <div className="animated-separator mb-12" />
 
@@ -128,7 +128,7 @@ const Footer = () => {
             )}
 
             <p className="mt-4 text-[13px] text-[#9CA3AF]/60">
-              Tip: Use the notification bell in the header to receive meetup updates.
+              Tip: Allow browser notifications when prompted to receive meetup updates.
             </p>
           </div>
         </div>

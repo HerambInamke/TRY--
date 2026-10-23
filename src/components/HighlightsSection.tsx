@@ -157,7 +157,7 @@ const HighlightsSection = () => {
 
         {/* ── Stats with ghost numbers ─────────────── */}
         <motion.div
-          className="mt-8 grid gap-4 md:grid-cols-4"
+          className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4"
           variants={staggerContainer(0.1)}
           initial="hidden"
           whileInView="show"

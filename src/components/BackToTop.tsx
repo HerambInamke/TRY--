@@ -33,10 +33,10 @@ const BackToTop = () => {
           exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#FF9900] text-white shadow-[0_8px_24px_rgba(255,153,0,0.3)] transition-colors hover:bg-[#FFB133] focus:outline-none focus:ring-2 focus:ring-[#FF9900] focus:ring-offset-2 focus:ring-offset-[#0A0A0A]"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#FF9900] text-white shadow-[0_8px_24px_rgba(255,153,0,0.3)] transition-colors hover:bg-[#FFB133] focus:outline-none focus:ring-2 focus:ring-[#FF9900] focus:ring-offset-2 focus:ring-offset-[#0A0A0A]"
           aria-label="Back to top"
         >
-          <ArrowUp className="h-5 w-5" />
+          <ArrowUp className="h-4 w-4" />
         </motion.button>
       )}
     </AnimatePresence>
