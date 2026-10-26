@@ -19,9 +19,9 @@ import { useAuth } from '@/hooks/use-auth';
 import { avatars } from '@/lib/appwrite';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
-const SECTION_IDS = ['about', 'faq', 'team', 'join'];
+type NavItem = { href: string; label: string; isPage?: boolean };
 
-const navLinks = [
+const defaultNavLinks: NavItem[] = [
   { href: '#about', label: 'About' },
   { href: '#faq', label: 'FAQ' },
   { href: '/her-tech-era', label: 'Her Tech Era', isPage: true },
@@ -29,7 +29,7 @@ const navLinks = [
   { href: '#join', label: 'Join' },
 ] as const;
 
-const Header = () => {
+const Header = ({ links: navLinks = defaultNavLinks }: { links?: NavItem[] }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('');
   const [isScrolled, setIsScrolled] = useState(false);
@@ -92,13 +92,13 @@ const Header = () => {
       },
     );
 
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
+    navLinks.filter((l) => !l.isPage).forEach(({ href }) => {
+      const el = document.getElementById(href.slice(1));
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [navLinks]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -119,8 +119,8 @@ const Header = () => {
       return;
     }
     const id = href.replace('#', '');
-    // If we're not on the homepage, navigate there first with the hash
-    if (window.location.pathname !== '/') {
+    // Section not on this page: go to the homepage with the hash
+    if (!document.getElementById(id)) {
       navigate('/' + href);
       setIsMenuOpen(false);
       return;

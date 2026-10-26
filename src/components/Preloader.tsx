@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Preloader = ({ onComplete }: { onComplete: () => void }) => {
   const [isExiting, setIsExiting] = useState(false);
@@ -92,21 +91,6 @@ const Preloader = ({ onComplete }: { onComplete: () => void }) => {
                 AWS User Group Pune
               </motion.p>
             </div>
-
-            {/* Full Page Handshake Lottie Animation */}
-            <motion.div
-              className="w-full aspect-square"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <DotLottieReact
-                src="/lottie/handshake.lottie"
-                autoplay
-                loop={false}
-                style={{ width: '100%', height: '100%' }}
-              />
-            </motion.div>
 
             {/* Enhanced Loading Bar with Percentage - Positioned at bottom */}
             <div className="absolute bottom-8 md:bottom-12 lg:bottom-20 left-0 right-0 px-4 z-20">

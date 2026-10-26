@@ -73,7 +73,8 @@ const EventMarquee = () => {
   const startOfToday = new Date().setHours(0, 0, 0, 0);
 
   const renderItems = (groupKey: string, isDuplicate: boolean) =>
-    announcements.map((a, idx) => {
+    // Only the top announcement (lowest `order`) is shown
+    announcements.slice(0, 1).map((a, idx) => {
       const targetUrl = a.link || a.meetupLink;
       const isLuma = a.platform === 'luma' || /lu\.ma|luma/i.test(targetUrl);
       const isMeetup = a.platform === 'meetup' || /meetup\.com/i.test(targetUrl);

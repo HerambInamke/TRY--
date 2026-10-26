@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
+import TeamSection from '@/components/TeamSection';
 import Footer from '@/components/Footer';
 import BackToTop from '@/components/BackToTop';
 import JoinFormModal from '@/components/JoinFormModal';
@@ -26,6 +27,15 @@ import priyankaSinghSolanki from '@/assets/panelist/Priyanka Singh Solanki.jpeg'
  * Bright: #9361A1 (center glow)
  * Deep:   #483184 (bottom indigo)
  */
+
+const witNavLinks = [
+  { href: '/', label: 'Home', isPage: true },
+  { href: '#mission', label: 'Mission' },
+  { href: '#gallery', label: 'Gallery' },
+  { href: '#journey', label: 'Journey' },
+  { href: '#voices', label: 'Voices' },
+  { href: '#team', label: 'Team' },
+];
 
 const heroStats = [
   { value: '500+', label: 'Women Reached', detail: 'Across community meetups & workshops' },
@@ -356,7 +366,7 @@ const WomenInTechPage = () => {
       </Helmet>
 
       <motion.div className="min-h-screen bg-[#0A0A0A]" variants={reducedMotion ? {} : pageTransition} initial="initial" animate="animate" exit="exit">
-        <Header />
+        <Header links={witNavLinks} />
 
         {/* ═══ HERO — Unified Emblem Event Hero ═══ */}
         <section ref={heroRef} className="relative flex sm:min-h-[calc(100svh-44px)] flex-col justify-center items-center overflow-hidden pt-[calc(4.5rem+var(--event-marquee-height))] pb-12 sm:pb-8 text-center">
@@ -705,7 +715,7 @@ const WomenInTechPage = () => {
         </section>
 
         {/* ═══ WHAT WE STAND FOR — Editorial 2x2 Pillars ═══ */}
-        <section className="py-20 sm:py-28 bg-[#09050E] relative border-t border-b border-white/[0.06]">
+        <section id="mission" className="py-20 sm:py-28 scroll-mt-24 bg-[#09050E] relative border-t border-b border-white/[0.06]">
           <div className="site-container max-w-6xl mx-auto px-6 sm:px-8">
             {/* Editorial Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-10 sm:pb-12 border-b border-white/[0.08]">
@@ -787,7 +797,7 @@ const WomenInTechPage = () => {
         </section>
 
         {/* ═══ EDITORIAL PHOTOGRAPHY: HER TECH ERA IN ACTION ═══ */}
-        <section className="pt-12 sm:pt-16 pb-16 sm:pb-24 bg-[#0c0812] relative overflow-hidden">
+        <section id="gallery" className="pt-12 sm:pt-16 pb-16 sm:pb-24 scroll-mt-24 bg-[#0c0812] relative overflow-hidden">
           <div className="site-container max-w-7xl mx-auto px-6 sm:px-8">
             {/* Viewport-Efficient Editorial Section Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 pb-5 sm:pb-6 border-b border-white/[0.08]">
@@ -971,7 +981,7 @@ const WomenInTechPage = () => {
         </section>
 
         {/* ═══ IMMERSIVE SCROLL-DRIVEN JOURNEY TIMELINE ═══ */}
-        <section ref={timelineRef} className="py-24 sm:py-32 bg-[#09050E] relative overflow-hidden border-t border-b border-white/[0.06]">
+        <section id="journey" ref={timelineRef} className="scroll-mt-24 py-24 sm:py-32 bg-[#09050E] relative overflow-hidden border-t border-b border-white/[0.06]">
           <div className="site-container max-w-5xl mx-auto px-6 sm:px-8">
             {/* Header */}
             <div className="text-center max-w-2xl mx-auto mb-16 sm:mb-24">
@@ -1106,7 +1116,7 @@ const WomenInTechPage = () => {
         </section>
 
         {/* ═══ EDITORIAL TESTIMONIALS: COMMUNITY VOICES ═══ */}
-        <section className="py-20 sm:py-24 bg-[#0a0710] relative overflow-hidden border-t border-b border-white/[0.06]">
+        <section id="voices" className="py-20 sm:py-24 scroll-mt-24 bg-[#0a0710] relative overflow-hidden border-t border-b border-white/[0.06]">
           {/* Subtle atmospheric violet glow */}
           <div
             className="pointer-events-none absolute right-1/4 top-1/2 -translate-y-1/2 h-[450px] w-[450px] rounded-full"
@@ -1344,6 +1354,8 @@ const WomenInTechPage = () => {
         <div className="bg-[#09050E] hidden sm:flex flex-col items-center justify-center py-2 sm:py-4 pointer-events-none">
           <div className="w-[1px] h-12 sm:h-16 bg-gradient-to-b from-purple-400/35 via-purple-400/15 to-transparent" />
         </div>
+
+        <TeamSection />
 
         {/* ═══ CINEMATIC FINAL CTA: THE CLOSING CHAPTER ═══ */}
         <section className="pt-6 sm:pt-8 pb-24 sm:pb-32 bg-[#09050E] relative overflow-hidden text-center">
