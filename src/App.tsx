@@ -13,7 +13,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import Preloader from "@/components/Preloader";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import WomenInTechPage from "./pages/WomenInTech";
+import HerTechEraSite from "./hte/HerTechEraSite";
 import { initFirebase, trackPageView } from "@/lib/firebase";
 import NotificationPrompt from "@/components/NotificationPrompt";
 import ProfileCompletionModal from "@/components/ProfileCompletionModal";
@@ -23,6 +23,14 @@ import GlobalCursorTrail from "@/components/GlobalCursorTrail";
 import { useAuth } from "@/hooks/use-auth";
 
 const queryClient = new QueryClient();
+
+/**
+ * Pages still on the previous design. They keep the old global chrome
+ * (preloader, events ticker, scroll bar, cursor trail); the new story pages bring their own.
+ */
+const LEGACY_PATHS = ['/dashboard'];
+const isLegacyPath = (pathname: string) =>
+  LEGACY_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
 /** Tracks page views on every route change via Firebase Analytics */
 const RouteTracker = () => {
@@ -42,7 +50,8 @@ const App = () => {
   useEffect(() => {
     // Check if user has already seen the preloader in this session
     const seen = sessionStorage.getItem('preloaderSeen');
-    if (seen) {
+    // The story pages open straight onto their first chapter, with no loading screen
+    if (seen || !isLegacyPath(window.location.pathname)) {
       setShowPreloader(false);
       setHasSeenPreloader(true);
     }
@@ -100,16 +109,17 @@ const AppShell = () => {
   }, [user, needsProfileCompletion]);
 
   const location = useLocation();
+  const legacy = isLegacyPath(location.pathname);
 
   return (
     <>
-      <EventMarquee />
-      <ScrollProgress />
-      <GlobalCursorTrail />
+      {legacy && <EventMarquee />}
+      {legacy && <ScrollProgress />}
+      {legacy && <GlobalCursorTrail />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Index />} />
-          <Route path="/her-tech-era" element={<WomenInTechPage />} />
+          <Route path="/her-tech-era" element={<HerTechEraSite />} />
           <Route path="/dashboard/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
