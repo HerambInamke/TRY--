@@ -3,6 +3,8 @@ import type { StickerArt } from './art';
 
 /**
  * A photocopied halftone cut-out sticker.
+ * Art marked `color` (the event photos) is printed as a colour halftone with a finer screen; the rest
+ * (fort, doors, clouds) stays a one-ink photocopy.
  *
  * The file on disk is a smooth grayscale "tone" image with a white die-cut border (small, compresses
  * well). In the browser it is turned into a newspaper dot screen once, on a canvas, at the screen's
@@ -30,6 +32,10 @@ const hex = (c: string) => {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 };
 
+/** Colour prints: how far the gaps between dots lift towards white, and how dark the dots are. */
+const LIGHT = 0.4;
+const DARK = 0.52;
+
 /** One period of a 45° dot screen, as thresholds 0..1, sized so it tiles exactly. */
 const screenTile = (pitch: number) => {
   const p = Math.max(4, Math.round(pitch * Math.SQRT2));
@@ -45,7 +51,7 @@ const screenTile = (pitch: number) => {
   return { t, p };
 };
 
-const draw = (img: HTMLImageElement, canvas: HTMLCanvasElement, cssW: number, cell: number, ink: string, paper: string) => {
+const draw = (img: HTMLImageElement, canvas: HTMLCanvasElement, cssW: number, cell: number, ink: string, paper: string, color: boolean) => {
   const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   const W = Math.min(2600, Math.max(1, Math.round(cssW * dpr)));
   const H = Math.max(1, Math.round((W * img.naturalHeight) / img.naturalWidth));
@@ -66,6 +72,19 @@ const draw = (img: HTMLImageElement, canvas: HTMLCanvasElement, cssW: number, ce
     for (let x = 0; x < W; x++) {
       const i = (y * W + x) * 4;
       if (px[i + 3] === 0) continue;
+      if (color) {
+        // colour print: the photo keeps its colours; where a dot sits it is darker, between dots lighter
+        const r = px[i];
+        const g = px[i + 1];
+        const b = px[i + 2];
+        const tone = (0.3 * r + 0.59 * g + 0.11 * b) / 255;
+        const d = (t[row + (x % p)] - tone) / soft + 0.5;
+        const a = d <= 0 ? 0 : d >= 1 ? 1 : d;
+        px[i] = r + (255 - r) * LIGHT + (r * DARK - (r + (255 - r) * LIGHT)) * a;
+        px[i + 1] = g + (255 - g) * LIGHT + (g * DARK - (g + (255 - g) * LIGHT)) * a;
+        px[i + 2] = b + (255 - b) * LIGHT + (b * DARK - (b + (255 - b) * LIGHT)) * a;
+        continue;
+      }
       const tone = px[i] / 255;
       const d = (t[row + (x % p)] - tone) / soft + 0.5; // >1 = full ink
       const a = d <= 0 ? 0 : d >= 1 ? 1 : d;
@@ -80,10 +99,13 @@ const draw = (img: HTMLImageElement, canvas: HTMLCanvasElement, cssW: number, ce
 export type StickerHandle = { el: HTMLDivElement | null };
 
 const Sticker = forwardRef<StickerHandle, Props>(
-  ({ art, alt = '', cell = 4.2, ink = '#141210', paper = '#faf7f0', className, style, eager, children }, ref) => {
+  ({ art, alt = '', cell: cellProp, ink = '#141210', paper = '#faf7f0', className, style, eager, children }, ref) => {
     const wrap = useRef<HTMLDivElement>(null);
     const canvas = useRef<HTMLCanvasElement>(null);
     const [ready, setReady] = useState(false);
+    const color = !!art.color;
+    // colour photos get a finer screen so faces stay recognisable
+    const cell = cellProp ?? (color ? 2.4 : 4.2);
     useImperativeHandle(ref, () => ({ el: wrap.current }), []);
 
     useEffect(() => {
@@ -100,7 +122,7 @@ const Sticker = forwardRef<StickerHandle, Props>(
         if (drawnW && Math.abs(w - drawnW) / drawnW < 0.25) return; // redraw only on real size changes
         drawnW = w;
         try {
-          draw(img, cv, w, cell, ink, paper);
+          draw(img, cv, w, cell, ink, paper, color);
           if (!cancelled) setReady(true);
         } catch {
           /* canvas unavailable: the tone image stays visible */
@@ -140,12 +162,12 @@ const Sticker = forwardRef<StickerHandle, Props>(
         window.removeEventListener('resize', onResize);
         clearTimeout(t);
       };
-    }, [art.src, cell, ink, paper, eager]);
+    }, [art.src, cell, ink, paper, eager, color]);
 
     return (
       <div
         ref={wrap}
-        className={`stk${ready ? ' is-ready' : ''}${className ? ` ${className}` : ''}`}
+        className={`stk${color ? ' stk--color' : ''}${ready ? ' is-ready' : ''}${className ? ` ${className}` : ''}`}
         style={{ aspectRatio: `${art.w} / ${art.h}`, ...style }}
         role={alt ? 'img' : undefined}
         aria-label={alt || undefined}

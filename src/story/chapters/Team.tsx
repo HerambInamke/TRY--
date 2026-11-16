@@ -1,13 +1,4 @@
-import { Fragment } from 'react';
 import useTeam, { type TeamMember } from '@/hooks/use-team';
-
-const Star = () => (
-  <li className="s-team__star" aria-hidden="true">
-    <svg viewBox="0 0 120 120">
-      <path d="M60 4 L71 40 L108 30 L84 60 L108 90 L71 80 L60 116 L49 80 L12 90 L36 60 L12 30 L49 40 Z" fill="currentColor" />
-    </svg>
-  </li>
-);
 
 const firstName = (name: string) => {
   const parts = name.replace(/^(Dr\.?|Mr\.?|Ms\.?|Mrs\.?)\s+/i, '').trim().split(/\s+/);
@@ -53,10 +44,7 @@ const Team = () => {
       {core.length > 0 && (
         <ul className="s-team__list" aria-label="Core team">
           {core.map((p, i) => (
-            <Fragment key={p.$id || p.name}>
-              {i > 0 && <Star />}
-              <PersonLine person={p} i={i % 3} n={i} />
-            </Fragment>
+            <PersonLine key={p.$id || p.name} person={p} i={i % 3} n={i} />
           ))}
         </ul>
       )}

@@ -21,14 +21,14 @@ const fallbackCore: TeamMember[] = [
   { name: 'Ameya Vaidya', linkedin: 'https://linkedin.com/in/ameya-vaidya-9a164317/', email: 'amyvaidya@gmail.com', twitter: '', category: 'core' },
   { name: 'Vipul Chaudhary', linkedin: 'https://linkedin.com/in/v-chaudhary/', email: '', twitter: '', category: 'core' },
   { name: 'Pulkit Kshirsagar', linkedin: 'https://linkedin.com/in/pulkit-kshirsagar/', email: '', twitter: '', category: 'core' },
-  { name: 'Afreen Bano', linkedin: 'https://linkedin.com/in/afreen-bano/', email: 'banoafreen786@gmail.com', twitter: '', category: 'core' },
+  { name: 'Afreen Bano', linkedin: 'https://linkedin.com/in/afreen-bano/', email: 'banoafreen786@gmail.com', twitter: '', category: 'core', role: 'Her Tech Era lead' },
+  { name: 'Anjali Mishra', linkedin: 'https://linkedin.com/in/anjali-mishra-b221a01ba/', email: 'anjalimishra3969@gmail.com', twitter: '', category: 'core', role: 'Her Tech Era lead' },
 ];
 
 const fallbackVolunteers: TeamMember[] = [
   { name: 'Aditya Kulkarni', linkedin: 'https://linkedin.com/in/aditya-kulkarni-b37b25200/', email: 'atharvapaithankar.rmdstic.entc@gmail.com', twitter: '', category: 'volunteer' },
   { name: 'Akanksha Jadhao', linkedin: 'https://linkedin.com/in/akanksha-jadhao/', email: '', twitter: '', category: 'volunteer' },
   { name: 'Amlan Mohapatra', linkedin: 'https://linkedin.com/in/amlan-mohapatra/', email: '', twitter: '', category: 'volunteer' },
-  { name: 'Anjali Mishra', linkedin: 'https://linkedin.com/in/anjali-mishra-b221a01ba/', email: 'anjalimishra3969@gmail.com', twitter: '', category: 'volunteer' },
   { name: 'Atul Chaudhary', linkedin: 'https://linkedin.com/in/atul-chaudhary-5a6a30257/', email: 'atulchaudhary1210@gmail.com', twitter: '', category: 'volunteer' },
   { name: 'Corey Strausman', linkedin: 'https://linkedin.com/in/coreystrausman/', email: '', twitter: '', category: 'volunteer' },
   { name: 'Dr. Bishwajit Mohapatra', linkedin: 'https://linkedin.com/in/biswajitmohapatra/', email: '', twitter: '', category: 'volunteer' },

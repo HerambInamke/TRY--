@@ -22,7 +22,8 @@ import printLabShadow from '@/assets/zine/print-lab-shadow.webp';
 import printStageSrc from '@/assets/zine/print-stage.webp';
 import printStageShadow from '@/assets/zine/print-stage-shadow.webp';
 
-export type StickerArt = { src: string; shadow?: string; w: number; h: number };
+/** `color`: the tone image is a colour photo, printed as a colour halftone */
+export type StickerArt = { src: string; shadow?: string; w: number; h: number; color?: boolean };
 
 export const art = {
   cloudA: { src: cloudASrc, shadow: cloudAShadow, w: 839, h: 570 },
@@ -31,12 +32,12 @@ export const art = {
   doorL: { src: doorLSrc, w: 78, h: 263 },
   doorR: { src: doorRSrc, w: 80, h: 263 },
   fort: { src: fortSrc, shadow: fortShadow, w: 1654, h: 834 },
-  printAcd: { src: printAcdSrc, shadow: printAcdShadow, w: 840, h: 572 },
-  printCrew: { src: printCrewSrc, shadow: printCrewShadow, w: 840, h: 414 },
-  printHallway: { src: printHallwaySrc, shadow: printHallwayShadow, w: 840, h: 1107 },
-  printHte: { src: printHteSrc, shadow: printHteShadow, w: 840, h: 1107 },
-  printLab: { src: printLabSrc, shadow: printLabShadow, w: 840, h: 640 },
-  printStage: { src: printStageSrc, shadow: printStageShadow, w: 840, h: 640 },
+  printAcd: { src: printAcdSrc, shadow: printAcdShadow, w: 852, h: 581, color: true },
+  printCrew: { src: printCrewSrc, shadow: printCrewShadow, w: 852, h: 419, color: true },
+  printHallway: { src: printHallwaySrc, shadow: printHallwayShadow, w: 853, h: 1123, color: true },
+  printHte: { src: printHteSrc, shadow: printHteShadow, w: 853, h: 1123, color: true },
+  printLab: { src: printLabSrc, shadow: printLabShadow, w: 853, h: 650, color: true },
+  printStage: { src: printStageSrc, shadow: printStageShadow, w: 853, h: 650, color: true },
 } satisfies Record<string, StickerArt>;
 
 /** The doorway on the fort sticker, as fractions of the sticker; seam = where the two leaves meet. */

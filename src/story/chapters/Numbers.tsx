@@ -122,7 +122,7 @@ const Numbers = () => {
         </h2>
 
         <div ref={photoRef} className="wall__photo">
-          <Sticker art={art.printCrew} cell={3.2} alt="The AWS User Group Pune crew together at Community Day" />
+          <Sticker art={art.printCrew} alt="The AWS User Group Pune crew together at Community Day" />
         </div>
 
         <ul className="wall__tapes">

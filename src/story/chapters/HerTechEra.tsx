@@ -51,7 +51,7 @@ const HerTechEra = () => {
         <div ref={shadowRef} className="portal__shadow" aria-hidden="true" />
         <div ref={cardRef} className="portal__card">
           <div className="portal__photo">
-            <Sticker art={art.printHte} alt="A member holding an I love AWS sign beside the Her Tech Era standee" cell={3.8} ink="#21154a" paper="#f6f1ff" />
+            <Sticker art={art.printHte} alt="A member holding an I love AWS sign beside the Her Tech Era standee" />
           </div>
           <div className="portal__text">
             <h2 id="hte-title" className="portal__title">

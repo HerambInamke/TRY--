@@ -18,12 +18,12 @@ import g8Shadow from '@/assets/zine/hte-g8-shadow.webp';
 import type { StickerArt } from '@/story/art';
 
 export const hteArt = {
-  g1: { src: g1Src, shadow: g1Shadow, w: 861, h: 504 },
-  g2: { src: g2Src, shadow: g2Shadow, w: 601, h: 1035 },
-  g3: { src: g3Src, shadow: g3Shadow, w: 861, h: 504 },
-  g4: { src: g4Src, shadow: g4Shadow, w: 861, h: 587 },
-  g5: { src: g5Src, shadow: g5Shadow, w: 861, h: 587 },
-  g6: { src: g6Src, shadow: g6Shadow, w: 642, h: 840 },
-  g7: { src: g7Src, shadow: g7Shadow, w: 861, h: 503 },
-  g8: { src: g8Src, shadow: g8Shadow, w: 861, h: 587 },
+  g1: { src: g1Src, shadow: g1Shadow, w: 861, h: 504, color: true },
+  g2: { src: g2Src, shadow: g2Shadow, w: 601, h: 1035, color: true },
+  g3: { src: g3Src, shadow: g3Shadow, w: 861, h: 504, color: true },
+  g4: { src: g4Src, shadow: g4Shadow, w: 861, h: 587, color: true },
+  g5: { src: g5Src, shadow: g5Shadow, w: 861, h: 587, color: true },
+  g6: { src: g6Src, shadow: g6Shadow, w: 642, h: 840, color: true },
+  g7: { src: g7Src, shadow: g7Shadow, w: 861, h: 503, color: true },
+  g8: { src: g8Src, shadow: g8Shadow, w: 861, h: 587, color: true },
 } satisfies Record<string, StickerArt>;

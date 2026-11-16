@@ -57,6 +57,7 @@
 }
 .stk__tone { filter: contrast(1.4); }
 .stk.is-ready .stk__tone { visibility: hidden; }
+.stk--color .stk__tone { filter: none; }
 
 .paste { position: relative; --rot: -3deg; transform: rotate(var(--rot)); }
 .paste figcaption { position: absolute; z-index: 2; left: 10px; bottom: -14px; }
@@ -433,8 +434,6 @@ a.s-team__first:hover { color: var(--orange); -webkit-text-stroke-color: var(--o
   padding: 5px 8px 4px; background: var(--paper); color: var(--ink); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 .s-team__item[data-tag='1'] .s-team__detail { transform: rotate(1.5deg); background: var(--orange); }
-.s-team__star { display: inline-block; width: 0.42em; margin: 0.12em 0 0; color: var(--orange); }
-.s-team__star svg { display: block; width: 100%; height: auto; }
 .s-team__vols { margin-top: 48px; display: grid; gap: 14px; }
 .s-team__vols h3 { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; font-size: 1.5rem; }
 .s-team__vols ul { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -685,7 +684,7 @@ a.s-team__first:hover { color: var(--orange); -webkit-text-stroke-color: var(--o
 .story--hte .foot__links a:hover, .story--hte a.s-team__first:hover { color: var(--lilac); }
 .story--hte .s-team__vols li:nth-child(3n + 2) a { background: var(--lilac); }
 .story--hte .foot__meta { color: #b5a9d6; }
-.story--hte .s-team__item[data-tone='2'] .s-team__first, .story--hte .s-team__star { color: var(--lilac); }
+.story--hte .s-team__item[data-tone='2'] .s-team__first { color: var(--lilac); }
 .story--hte .s-team__item[data-tag='1'] .s-team__detail { background: var(--lilac); }
 .story--hte a.s-team__first:hover { -webkit-text-stroke-color: var(--lilac); }
 .story--hte ::selection { background: var(--lilac); color: var(--ink); }
@@ -716,6 +715,12 @@ a.s-team__first:hover { color: var(--orange); -webkit-text-stroke-color: var(--o
 .h-hero__side { display: grid; gap: 18px; justify-items: center; }
 .h-hero__lead { max-width: 36ch; font-size: 1.1rem; }
 .h-hero__lead a { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+/* who leads the chapter, on a taped white note */
+.h-hero__kickoff { position: relative; display: grid; gap: 10px; justify-items: start; max-width: 36ch; padding: 18px 16px 14px; background: var(--white); color: var(--ink); text-align: left; transform: rotate(-1.5deg); box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3); }
+.h-hero__kickoff::before { content: ''; position: absolute; top: -10px; left: 50%; width: 84px; height: 20px; margin-left: -42px; background: rgba(201, 182, 255, 0.85); transform: rotate(-4deg); }
+.h-hero__kickoff .dymo { white-space: normal; line-height: 1.15; }
+.h-hero__kickoff p { font-size: 1rem; line-height: 1.4; }
+.h-hero__kickoff a { font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .h-hero__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 @media (min-width: 1024px) {
   .h-hero__row { grid-template-columns: auto 1fr; justify-items: start; align-items: center; text-align: left; gap: 60px; }

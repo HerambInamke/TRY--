@@ -19,8 +19,10 @@ import { hteArt } from './art';
  */
 
 const WIT_LINKEDIN = 'https://www.linkedin.com/company/aws-ug-for-women-in-tech-india/';
-const INK = '#21154a';
-const PAPER = '#f6f1ff';
+const LEADS = [
+  { name: 'Afreen Bano', linkedin: 'https://linkedin.com/in/afreen-bano/' },
+  { name: 'Anjali Mishra', linkedin: 'https://linkedin.com/in/anjali-mishra-b221a01ba/' },
+];
 
 const stats = [
   { value: '500+', label: 'women reached', detail: 'across meetups and workshops', tone: 'ink' },
@@ -43,6 +45,7 @@ const timeline = [
   { date: 'Dec 2024', title: 'Community Day feature', description: 'Dedicated Women in Tech track at AWS Community Day Pune 2024.' },
   { date: 'Mar 2025', title: 'Growing strong', description: 'Expanded to regular monthly sessions with mentorship pairing program.' },
   { date: 'May 2025', title: 'AWS Community Day 2025', description: 'Women in Tech sessions featured prominently with record participation.' },
+  { date: 'Mar 2026', title: 'The Pune chapter kicks off', description: 'Her Tech Era Pune launches at AWS Community Day Pune 2026, led by Afreen Bano and Anjali Mishra.' },
 ];
 
 const voices = [
@@ -122,7 +125,7 @@ const Hero = ({ onJoin }: { onJoin: () => void }) => {
       <p className="h-hero__tag">Scaling heights. Building dreams.</p>
       <div className="h-hero__row">
         <div ref={photo} className="h-hero__photo">
-          <Sticker art={hteArt.g6} eager ink={INK} paper={PAPER} cell={3.6} alt="Two members with a prize beside the winged Her Tech Era standee" />
+          <Sticker art={hteArt.g6} eager alt="Two members with a prize beside the winged Her Tech Era standee" />
           <div className="h-hero__star">
             <Star />
           </div>
@@ -132,6 +135,14 @@ const Hero = ({ onJoin }: { onJoin: () => void }) => {
             Workshops, mentorship and a stage for women in cloud, AI and DevOps. Powered by{' '}
             <Link to="/">AWS User Group Pune</Link>.
           </p>
+          <div className="h-hero__kickoff">
+            <span className="dymo dymo--orange dymo--sm">Kicked off at AWS Community Day Pune 2026</span>
+            <p>
+              The Pune chapter of Her Tech Era started at ACD 2026 and is led by{' '}
+              <a href={LEADS[0].linkedin} target="_blank" rel="noopener noreferrer">{LEADS[0].name}</a> and{' '}
+              <a href={LEADS[1].linkedin} target="_blank" rel="noopener noreferrer">{LEADS[1].name}</a>.
+            </p>
+          </div>
           <p className="dymo dymo--sm h-hero__recap">Thank you, Pune · 18 Oct 2026 recap</p>
           <div className="h-hero__cta">
             <button type="button" className="btn btn--orange" onClick={onJoin}>
@@ -293,7 +304,7 @@ const HerTechEraSite = () => {
           <div className="h-gallery__wall">
             {gallery.map((g, i) => (
               <figure key={g.cap} className={`paste h-gallery__item h-gallery__item--${i}`} data-slap style={{ ['--rot' as string]: `${ROT[i]}deg` }}>
-                <Sticker art={g.art} alt={g.alt} ink={INK} paper={PAPER} cell={3.6} />
+                <Sticker art={g.art} alt={g.alt} />
                 <figcaption className="dymo dymo--sm">{g.cap}</figcaption>
               </figure>
             ))}
