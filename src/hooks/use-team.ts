@@ -33,6 +33,7 @@ const fallbackVolunteers: TeamMember[] = [
   { name: 'Corey Strausman', linkedin: 'https://linkedin.com/in/coreystrausman/', email: '', twitter: '', category: 'volunteer' },
   { name: 'Dr. Bishwajit Mohapatra', linkedin: 'https://linkedin.com/in/biswajitmohapatra/', email: '', twitter: '', category: 'volunteer' },
   { name: 'Gourav Singar', linkedin: 'https://linkedin.com/in/gourav-singar-31971b242/', email: '', twitter: '', category: 'volunteer' },
+  { name: 'Heramb Inamke', linkedin: '', email: '', twitter: '', category: 'volunteer' },
   { name: 'Janhavi Ajmire', linkedin: 'https://linkedin.com/in/janhavi-ajmire-772415177/', email: 'ajmirejanhavi15@gmail.com', twitter: '', category: 'volunteer' },
   { name: 'María Encinar', linkedin: 'https://linkedin.com/in/mariaencinar/', email: '', twitter: '', category: 'volunteer' },
   { name: 'Mukund Kulkarni', linkedin: 'https://linkedin.com/in/mukund-kulkarni-b43ba7249/', email: '', twitter: '', category: 'volunteer' },

@@ -418,7 +418,8 @@
   margin-top: 40px; display: flex; flex-wrap: wrap; align-items: center;
   gap: calc(var(--big) * 0.14) calc(var(--big) * 0.26); font-size: var(--big);
 }
-.s-team__item { display: grid; justify-items: start; }
+.s-team__item { display: flex; align-items: center; gap: calc(var(--big) * 0.26); }
+.s-team__name { display: grid; justify-items: start; }
 .s-team__first {
   display: inline-block; font-family: var(--display); text-transform: uppercase; font-size: var(--big); line-height: 0.86;
   text-decoration: none; color: var(--paper); transition: color 160ms var(--ease-out), transform 220ms var(--slap);
@@ -434,6 +435,8 @@ a.s-team__first:hover { color: var(--orange); -webkit-text-stroke-color: var(--o
   padding: 5px 8px 4px; background: var(--paper); color: var(--ink); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 .s-team__item[data-tag='1'] .s-team__detail { transform: rotate(1.5deg); background: var(--orange); }
+.s-team__star { display: inline-block; flex: none; width: 0.42em; margin: 0.12em 0 0; color: var(--orange); }
+.s-team__star svg { display: block; width: 100%; height: auto; }
 .s-team__vols { margin-top: 48px; display: grid; gap: 14px; }
 .s-team__vols h3 { font-family: var(--display); text-transform: uppercase; letter-spacing: 0.04em; font-size: 1.5rem; }
 .s-team__vols ul { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -442,8 +445,8 @@ a.s-team__first:hover { color: var(--orange); -webkit-text-stroke-color: var(--o
 .s-team__vols a, .s-team__vols li > span {
   display: inline-block; padding: 5px 10px; background: var(--paper); color: var(--ink); text-decoration: none; font-weight: 500;
 }
-.s-team__vols li:nth-child(3n + 1) a { transform: rotate(-1.5deg); }
-.s-team__vols li:nth-child(3n + 2) a { transform: rotate(1deg); background: var(--orange); }
+.s-team__vols li:nth-child(3n + 1) > * { transform: rotate(-1.5deg); }
+.s-team__vols li:nth-child(3n + 2) > * { transform: rotate(1deg); background: var(--orange); }
 .s-team__vols a:hover { background: var(--white); }
 
 /* ── 8. Questions, as taped notes ──────────────────────────── */
@@ -682,9 +685,9 @@ a.s-team__first:hover { color: var(--orange); -webkit-text-stroke-color: var(--o
 .story--hte .pg-ink .hl, .story--hte .pg-blue .hl { background: var(--lilac); }
 .story--hte .foot__big span { color: var(--lilac); }
 .story--hte .foot__links a:hover, .story--hte a.s-team__first:hover { color: var(--lilac); }
-.story--hte .s-team__vols li:nth-child(3n + 2) a { background: var(--lilac); }
+.story--hte .s-team__vols li:nth-child(3n + 2) > * { background: var(--lilac); }
 .story--hte .foot__meta { color: #b5a9d6; }
-.story--hte .s-team__item[data-tone='2'] .s-team__first { color: var(--lilac); }
+.story--hte .s-team__item[data-tone='2'] .s-team__first, .story--hte .s-team__star { color: var(--lilac); }
 .story--hte .s-team__item[data-tag='1'] .s-team__detail { background: var(--lilac); }
 .story--hte a.s-team__first:hover { -webkit-text-stroke-color: var(--lilac); }
 .story--hte ::selection { background: var(--lilac); color: var(--ink); }
